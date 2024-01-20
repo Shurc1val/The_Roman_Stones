@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/game.css') }}">
+    <title>The Roman Stones</title>
+</head>
+<body>
+    <div>
+        <h1>
+            <br>
+            The Roman Stones
+        </h1>
+    </div>
+
+    <div class="game">
+
+        <div class="board">
+            <div class="top">
+                <table>
+                    <tr>
+                        <td>
+                            <div class="square">
+                                <label>S</label>
+                                {% for counter in counters[14] %}
+                                <button class="counter" style="background-color: {{ counter }}"></button>
+                                {% endfor %}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="square">
+                                <label>XII</label>
+                                {% for counter in counters[13] %}
+                                <button class="counter" style="background-color: {{ counter }}"></button>
+                                {% endfor %}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="square">
+                                <label>XI</label>
+                                {% for counter in counters[12] %}
+                                <button class="counter" style="background-color: {{ counter }}"></button>
+                                {% endfor %}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="square">
+                                <label>X</label>
+                                {% for counter in counters[11] %}
+                                <button class="counter" style="background-color: {{ counter }}"></button>
+                                {% endfor %}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="square">
+                                <label>IX</label>
+                                {% for counter in counters[10] %}
+                                <button class="counter" style="background-color: {{ counter }}"></button>
+                                {% endfor %}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="square">
+                                <label>IIX</label>
+                                {% for counter in counters[9] %}
+                                <button class="counter" style="background-color: {{ counter }}"></button>
+                                {% endfor %}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="square">
+                                <label>VII</label>
+                                {% for counter in counters[8] %}
+                                <button class="counter" style="background-color: {{ counter }}"></button>
+                                {% endfor %}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="square">
+                                <label>S</label>
+                                {% for counter in counters[7] %}
+                                <button class="counter" style="background-color: {{ counter }}"></button>
+                                {% endfor %}
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="left">
+                <table>
+                    <tr>
+                        <td>
+                            <div class="square">
+                                <label>XIII</label>
+                                {% for counter in counters[15] %}
+                                <button class="counter" style="background-color: {{ counter }}"></button>
+                                {% endfor %}
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="square">
+                                <label>XIV</label>
+                                {% for counter in counters[16] %}
+                                <button class="counter" style="background-color: {{ counter }}"></button>
+                                {% endfor %}
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="square">
+                                <label>XV</label>
+                                {% for counter in counters[17] %}
+                                <button class="counter" style="background-color: {{ counter }}"></button>
+                                {% endfor %}
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="square">
+                                <label>XVI</label>
+                                {% for counter in counters[18] %}
+                                <button class="counter" style="background-color: {{ counter }}"></button>
+                                {% endfor %}
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="square">
+                                <label>XVII</label>
+                                {% for counter in counters[19] %}
+                                <button class="counter" style="background-color: {{ counter }}"></button>
+                                {% endfor %}
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="square">
+                                <label>XIIX</label>
+                                {% for counter in counters[20] %}
+                                <button class="counter" style="background-color: {{ counter }}"></button>
+                                {% endfor %}
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <img src="../static/images/bc.png" alt="Roman Mosaic">
+
+            <div class="right">
+                <table>
+                    <tr>
+                        <td>
+                            <div class="square">
+                                <label>VI</label>
+                                {% for counter in counters[6] %}
+                                <button class="counter" style="background-color: {{ counter }}"></button>
+                                {% endfor %}
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="square">
+                                <label>V</label>
+                                {% for counter in counters[5] %}
+                                <button class="counter" style="background-color: {{ counter }}"></button>
+                                {% endfor %}
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="square">
+                                <label>IV</label>
+                                {% for counter in counters[4] %}
+                                <button class="counter" style="background-color: {{ counter }}"></button>
+                                {% endfor %}
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="square">
+                                <label>III</label>
+                                {% for counter in counters[3] %}
+                                <button class="counter" style="background-color: {{ counter }}"></button>
+                                {% endfor %}
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="square">
+                                <label>II</label>
+                                {% for counter in counters[2] %}
+                                <button class="counter" style="background-color: {{ counter }}"></button>
+                                {% endfor %}
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="square">
+                                <label>I</label>
+                                {% for counter in counters[1] %}
+                                <button class="counter" style="background-color: {{ counter }}"></button>
+                                {% endfor %}
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="bottom">
+                <table>
+                    <tr>
+                        <td>
+                            <div class="square">
+                                <label>S</label>
+                                {% for counter in counters[21] %}
+                                <button class="counter" style="background-color: {{ counter }}"></button>
+                                {% endfor %}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="square">
+                                <label>XIX</label>
+                                {% for counter in counters[22] %}
+                                <button class="counter" style="background-color: {{ counter }}"></button>
+                                {% endfor %}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="square">
+                                <label>XX</label>
+                                {% for counter in counters[23] %}
+                                <button class="counter" style="background-color: {{ counter }}"></button>
+                                {% endfor %}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="square">
+                                <label>XXI</label>
+                                {% for counter in counters[24] %}
+                                <button class="counter" style="background-color: {{ counter }}"></button>
+                                {% endfor %}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="square">
+                                <label>XXII</label>
+                                {% for counter in counters[25] %}
+                                <button class="counter" style="background-color: {{ counter }}"></button>
+                                {% endfor %}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="square">
+                                <label>XXIII</label>
+                                {% for counter in counters[26] %}
+                                <button class="counter" style="background-color: {{ counter }}"></button>
+                                {% endfor %}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="square">
+                                <label>XXIV</label>
+                                {% for counter in counters[27] %}
+                                <button class="counter" style="background-color: {{ counter }}"></button>
+                                {% endfor %}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="square">
+                                <label>S</label>
+                                {% for counter in counters[0] %}
+                                <button class="counter" style="background-color: {{ counter }}"></button>
+                                {% endfor %}
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            
+        </div>
+
+        <div class="controls">
+            <div class="game_level">
+                <label>Player Turn:&nbsp;&nbsp;<span style="color: red">Red</span></label>
+                <button class="roll_die">Roll Die</button>
+            </div>
+            <img src="../static/images/die_faces/die_face_6.png" alt="Die Face 6">
+            
+            <div class="off_board">
+                {% for counter in counters[28] %}
+                <button class="counter" style="background-color: {{ counter }}"></button>
+                {% endfor %}
+            </div>
+            
+            <div class="high_level">
+                <button class="function" style="color: blue;">New Game</button>
+                <button class="function" style="color: red;">Quit</button>
+            </div>
+        </div>
+    </div>
+
+
+
+</body>
+</html>

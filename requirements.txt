@@ -1,0 +1,4 @@
+flask
+turbo-flask
+bs4
+jinja2
