@@ -121,9 +121,9 @@ class Game():
         self.players.append(player)
 
 
-    def check_win(self) -> bool:
-        """Function to check if the game has been won."""
-        if self.finished_tokens.count(self.players[0].colour) == self.counters_per_player:
+    def check_win(self, colour: str) -> bool:
+        """Function to check if the game has been won by a given colour."""
+        if self.finished_tokens.count(colour) == self.counters_per_player:
             return True
         
         return False

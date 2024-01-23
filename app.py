@@ -165,7 +165,7 @@ def move_piece():
         turbo.replace(render_template('player_turn_label.html', player_turn = game.players[0].colour), 'player_turn_label'),
         turbo.replace(render_template('off_board.html', finished_tokens=game.finished_tokens), 'off_board')        
         ])
-    if game.check_win():
+    if game.check_win(colour):
         turbo.push(turbo.replace(render_template('game.html', counters = game.board, finished_tokens = game.finished_tokens, die_number = game.players[0].die_roll, player_turn = game.players[0].colour, message={'title': "Winner", 'text': f"Congratulations {colour} player, you have won!"}), 'game'))
     return Response(status=200)
 
@@ -176,10 +176,10 @@ def roll_die():
     """Function to roll a die, if it's not already been rolled."""
     if not game._validate_user(current_user.get_id()):
         redirect(url_for('display_game'))
-        return {}, 200
+        return Response(status=400)
 
     time_s = randint(1,3) / 100
-    time_threshold = randint(1, 8) / 10
+    time_threshold = randint(3, 5) / 10
     if game.players[0].die_roll == 0:
         with app.app_context():
             while time_s < time_threshold:
@@ -197,8 +197,8 @@ def roll_die():
             'title': "No Moves Available",
             'text': f"Sorry {game.players[0].colour}, you have no moves available!"
         }
+        turbo.push(turbo.replace(render_template('board.html', counters=game.board, message=message), "board"), to=current_user.get_id())
         game.next_player()
-        turbo.push(turbo.replace(render_template('game.html', counters = game.board, finished_tokens = game.finished_tokens, die_number = game.players[0].die_roll, player_turn = game.players[0].colour, message=message), "game"), to=current_user.get_id())
     
     return Response(status=200)
 
@@ -207,11 +207,8 @@ def roll_die():
 @login_redirect
 def close_popup():
     """Function to close popup when okay button pressed."""
-    turbo.push([
-        turbo.replace(render_template('popup.html', message={}), 'popup_box'),
-        turbo.replace(render_template('controls.html', finished_tokens = game.finished_tokens, die_number = game.players[0].die_roll, player_turn = game.players[0].colour, message={}), 'controls')
-        ], to=current_user.get_id())
-    print('ham')
+    turbo.push(turbo.replace(render_template('popup.html', message={}), 'popup_box'), to=current_user.get_id())
+    turbo.push(turbo.replace(render_template('controls.html', finished_tokens = game.finished_tokens, die_number = game.players[0].die_roll, player_turn = game.players[0].colour, message={}), 'controls'))
     return redirect(url_for('display_game'))
 
 
