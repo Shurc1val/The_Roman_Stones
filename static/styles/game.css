@@ -22,13 +22,15 @@ h1 {
     position: relative;
     height: 864px;
     width: 720px;
+    z-index: 0;
     background-color: black;
-    display: block;
+    display: flex;
     margin: 0 auto;
     display: block;
     justify-content: center;
     overflow: auto;
 }
+
 
 .board {
     position: relative;
@@ -149,9 +151,17 @@ h1 {
             opacity: 100%;
             justify-self: start;
         }
+
+        .blank {
+            height: 100%;
+            aspect-ratio: 1 / 1;
+            border-radius: 50%;
+            border: 0px solid black;
+            opacity: 0%;
+            justify-self: start;
+        }
     }
 }
-
 
 
 .controls {
@@ -187,6 +197,10 @@ h1 {
             background-color: whitesmoke;
             font-family: 'Times New Roman', Times, serif;
             font-size: Medium;
+        }
+
+        .function:active {
+            transform: scale(0.98);
         }
     }
 
@@ -231,7 +245,8 @@ h1 {
             color: antiquewhite;
             margin-top: 3%;
             margin-bottom: 3%;
-            font-size: x-large;
+            font-size: 22px;
+            flex-wrap: nowrap;
         }
 
 
@@ -255,6 +270,10 @@ h1 {
                 font-family: 'Times New Roman', Times, serif;
                 font-size: Medium;
             }
+
+            .roll_die:active {
+                transform: scale(0.98);
+            }
         }
 
         
@@ -268,4 +287,84 @@ h1 {
     }
 
     
+}
+
+
+.popup_box {
+    position: absolute;
+    z-index: 3 !important;
+    display: inline-block;
+    flex-wrap: wrap;
+    width: 40%;
+    margin-left: 30%;
+    margin-right: 30%;
+    margin-top: 10%;
+    height: auto;
+    background-color: lightgrey;
+    border: 3px solid darkslategray;
+    text-align: center;
+
+    .top {
+        position: relative;
+        width: 100%;
+        height: 25px;
+        text-align: center;
+        background-color: darkslategray;
+        color: white;
+        font-size: large;
+    }
+
+    p {
+        display: block;
+        width: 95%;
+        margin-top: 5%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    form {
+        width: 90%;
+        height: auto;
+        position: relative;
+        display: block;
+        margin-top: 25px;
+        margin-left: 5%;
+        margin-right: 5%;
+        bottom: 10px;
+        justify-content: center;
+
+        .selection_box {
+            width: 100%;
+            display: inline-block;
+            margin-bottom: 10px;
+
+            label {
+                width: 60%;
+                float: left;
+                text-align: left;
+            }
+
+            select {
+                width: auto;
+                float: right;
+                text-align: right;
+            }
+        }
+
+        .submit {
+            height: 25px;
+            width: 70px;
+            border-radius: 10%;
+            border: 2px solid black;
+            background-color: darkgrey;
+            opacity: 100%;
+            margin-left: 0;
+            bottom: 10px;
+            border-style: outset;
+        }
+
+        .submit:active {
+            transform: scale(0.98);
+        }
+    }
 }

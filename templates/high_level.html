@@ -1,0 +1,9 @@
+<div id="high_level" class="high_level">
+    {% if message|length == 0 %}
+        <button class="function" style="color: blue;">New Game</button>
+        <button class="function" style="color: red;">Quit</button>
+    {% else %}
+        <button class="function" style="color: blue;" disabled>New Game</button>
+        <button class="function" style="color: red;" disabled>Quit</button>
+    {% endif %}
+</div>

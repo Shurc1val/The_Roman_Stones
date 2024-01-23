@@ -1,0 +1,64 @@
+{% if "colours_available" in message %}
+    {% if message.players|length == 0 %}
+        <div id="popup_box" class="popup_box">
+            <div class="top">
+            Initial Player Login
+            </div>
+            <form method="post" action="/login">
+                <div class="selection_box">
+                    <label>Number of Players:</label>
+                    <select name="num_players">
+                        {% for num in range(1,5) %}
+                            <option>{{ num }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="selection_box">
+                    <label>Counters per Player:</label>
+                    <select name="counters_per_player">
+                        {% for num in range(1,5) %}
+                            <option>{{ num }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="selection_box">
+                    <label>Colour: </label>
+                    <select name="colour">
+                        {% for colour in message.colours_available %}
+                            <option style="color: {{ colour }};">{{ colour|capitalize }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button class="submit" type="submit">Submit</button>
+            </form>
+        </div>
+    {% else %}
+        <div id="popup_box" class="popup_box">
+            <div class="top">
+            Player Login
+            </div>
+            <form method="post" action="/login">
+                <div class="selection_box">
+                    <label>Colour: </label>
+                    <select name="colour">
+                        {% for colour in message.colours_available %}
+                            <option style="color: {{ colour }};">{{ colour|capitalize }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button class="submit" type="submit">Submit</button>
+            </form>
+        </div>
+    {% endif %}
+    
+{% elif "title" in message %}
+    <div id="popup_box" class="popup_box">
+        <div class="top">
+            {{ message.title }}
+        </div>
+        <p>{{ message.text }}</p>
+        <form method="post" action="/close_popup">
+            <button class="submit" type="submit">Okay</button>
+        </form>
+    </div>
+{% endif %}

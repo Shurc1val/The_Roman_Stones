@@ -1,4 +1,5 @@
 flask
 turbo-flask
+flask-login
 bs4
 jinja2

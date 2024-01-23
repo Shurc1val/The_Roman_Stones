@@ -1,0 +1,498 @@
+<div id="board" class="board">
+    <div class="top">
+        <table>
+            <tr>
+                <td>
+                    <div class="square">
+                        <label>S</label>
+                        {% for counter in counters[14] %}
+                            <form method="post" action="/move_piece">
+                                {% if counter is not none %}
+                                    <input type="hidden" name="colour" value="{{ counter }}">
+                                    <input type="hidden" name="square_num" value="14">
+                                    <button class="counter" type="submit" style="background-color: {{ counter }}"></button>
+                                {% else %}
+                                    <button class="blank" disabled></button>
+                                {% endif %}
+                            </form>
+                        {% endfor %}
+                    </div>
+                </td>
+                <td>
+                    <div class="square">
+                        <label>XII</label>
+                        {% for counter in counters[13] %}
+                            <form method="post" action="/move_piece">
+                                {% if counter is not none %}
+                                    <input type="hidden" name="colour" value="{{ counter }}">
+                                    <input type="hidden" name="square_num" value="13">
+                                    <button class="counter" type="submit" style="background-color: {{ counter }}"></button>
+                                {% else %}
+                                    <button class="blank" disabled></button>
+                                {% endif %}
+                                </form>
+                        {% endfor %}
+                    </div>
+                </td>
+                <td>
+                    <div class="square">
+                        <label>XI</label>
+                        {% for counter in counters[12] %}
+                            <form method="post" action="/move_piece">
+                                {% if counter is not none %}
+                                    <input type="hidden" name="colour" value="{{ counter }}">
+                                    <input type="hidden" name="square_num" value="12">
+                                    <button class="counter" type="submit" style="background-color: {{ counter }}"></button>
+                                {% else %}
+                                    <button class="blank" disabled></button>
+                                {% endif %}
+                                </form>
+                        {% endfor %}
+                    </div>
+                </td>
+                <td>
+                    <div class="square">
+                        <label>X</label>
+                        {% for counter in counters[11] %}
+                            <form method="post" action="/move_piece">
+                                {% if counter is not none %}
+                                    <input type="hidden" name="colour" value="{{ counter }}">
+                                    <input type="hidden" name="square_num" value="11">
+                                    <button class="counter" type="submit" style="background-color: {{ counter }}"></button>
+                                {% else %}
+                                    <button class="blank" disabled></button>
+                                {% endif %}
+                                </form>
+                        {% endfor %}
+                    </div>
+                </td>
+                <td>
+                    <div class="square">
+                        <label>IX</label>
+                        {% for counter in counters[10] %}
+                            <form method="post" action="/move_piece">
+                                {% if counter is not none %}
+                                    <input type="hidden" name="colour" value="{{ counter }}">
+                                    <input type="hidden" name="square_num" value="10">
+                                    <button class="counter" type="submit" style="background-color: {{ counter }}"></button>
+                                {% else %}
+                                    <button class="blank" disabled></button>
+                                {% endif %}
+                                </form>
+                        {% endfor %}
+                    </div>
+                </td>
+                <td>
+                    <div class="square">
+                        <label>IIX</label>
+                        {% for counter in counters[9] %}
+                            <form method="post" action="/move_piece">
+                                {% if counter is not none %}
+                                    <input type="hidden" name="colour" value="{{ counter }}">
+                                    <input type="hidden" name="square_num" value="9">
+                                    <button class="counter" type="submit" style="background-color: {{ counter }}"></button>
+                                {% else %}
+                                    <button class="blank" disabled></button>
+                                {% endif %}
+                                </form>
+                        {% endfor %}
+                    </div>
+                </td>
+                <td>
+                    <div class="square">
+                        <label>VII</label>
+                        {% for counter in counters[8] %}
+                            <form method="post" action="/move_piece">
+                                {% if counter is not none %}
+                                    <input type="hidden" name="colour" value="{{ counter }}">
+                                    <input type="hidden" name="square_num" value="8">
+                                    <button class="counter" type="submit" style="background-color: {{ counter }}"></button>
+                                {% else %}
+                                    <button class="blank" disabled></button>
+                                {% endif %}
+                                </form>
+                        {% endfor %}
+                    </div>
+                </td>
+                <td>
+                    <div class="square">
+                        <label>S</label>
+                        {% for counter in counters[7] %}
+                            <form method="post" action="/move_piece">
+                                {% if counter is not none %}
+                                    <input type="hidden" name="colour" value="{{ counter }}">
+                                    <input type="hidden" name="square_num" value="7">
+                                    <button class="counter" type="submit" style="background-color: {{ counter }}"></button>
+                                {% else %}
+                                    <button class="blank" disabled></button>
+                                {% endif %}
+                                </form>
+                        {% endfor %}
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="left">
+        <table>
+            <tr>
+                <td>
+                    <div class="square">
+                        <label>XIII</label>
+                        {% for counter in counters[15] %}
+                            <form method="post" action="/move_piece">
+                                {% if counter is not none %}
+                                    <input type="hidden" name="colour" value="{{ counter }}">
+                                    <input type="hidden" name="square_num" value="15">
+                                    <button class="counter" type="submit" style="background-color: {{ counter }}"></button>
+                                {% else %}
+                                    <button class="blank" disabled></button>
+                                {% endif %}
+                                </form>
+                        {% endfor %}
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="square">
+                        <label>XIV</label>
+                        {% for counter in counters[16] %}
+                            <form method="post" action="/move_piece">
+                                {% if counter is not none %}
+                                    <input type="hidden" name="colour" value="{{ counter }}">
+                                    <input type="hidden" name="square_num" value="16">
+                                    <button class="counter" type="submit" style="background-color: {{ counter }}"></button>
+                                {% else %}
+                                    <button class="blank" disabled></button>
+                                {% endif %}
+                                </form>
+                        {% endfor %}
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="square">
+                        <label>XV</label>
+                        {% for counter in counters[17] %}
+                            <form method="post" action="/move_piece">
+                                {% if counter is not none %}
+                                    <input type="hidden" name="colour" value="{{ counter }}">
+                                    <input type="hidden" name="square_num" value="17">
+                                    <button class="counter" type="submit" style="background-color: {{ counter }}"></button>
+                                {% else %}
+                                    <button class="blank" disabled></button>
+                                {% endif %}
+                                </form>
+                        {% endfor %}
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="square">
+                        <label>XVI</label>
+                        {% for counter in counters[18] %}
+                            <form method="post" action="/move_piece">
+                                {% if counter is not none %}
+                                    <input type="hidden" name="colour" value="{{ counter }}">
+                                    <input type="hidden" name="square_num" value="18">
+                                    <button class="counter" type="submit" style="background-color: {{ counter }}"></button>
+                                {% else %}
+                                    <button class="blank" disabled></button>
+                                {% endif %}
+                                </form>
+                        {% endfor %}
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="square">
+                        <label>XVII</label>
+                        {% for counter in counters[19] %}
+                            <form method="post" action="/move_piece">
+                                {% if counter is not none %}
+                                    <input type="hidden" name="colour" value="{{ counter }}">
+                                    <input type="hidden" name="square_num" value="19">
+                                    <button class="counter" type="submit" style="background-color: {{ counter }}"></button>
+                                {% else %}
+                                    <button class="blank" disabled></button>
+                                {% endif %}
+                                </form>
+                        {% endfor %}
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="square">
+                        <label>XIIX</label>
+                        {% for counter in counters[20] %}
+                            <form method="post" action="/move_piece">
+                                {% if counter is not none %}
+                                    <input type="hidden" name="colour" value="{{ counter }}">
+                                    <input type="hidden" name="square_num" value="20">
+                                    <button class="counter" type="submit" style="background-color: {{ counter }}"></button>
+                                {% else %}
+                                    <button class="blank" disabled></button>
+                                {% endif %}
+                                </form>
+                        {% endfor %}
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <img src="../static/images/bc.png" alt="Roman Mosaic">
+
+    <div class="right">
+        <table>
+            <tr>
+                <td>
+                    <div class="square">
+                        <label>VI</label>
+                        {% for counter in counters[6] %}
+                            <form method="post" action="/move_piece">
+                                {% if counter is not none %}
+                                    <input type="hidden" name="colour" value="{{ counter }}">
+                                    <input type="hidden" name="square_num" value="6">
+                                    <button class="counter" type="submit" style="background-color: {{ counter }}"></button>
+                                {% else %}
+                                    <button class="blank" disabled></button>
+                                {% endif %}
+                                </form>
+                        {% endfor %}
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="square">
+                        <label>V</label>
+                        {% for counter in counters[5] %}
+                            <form method="post" action="/move_piece">
+                                {% if counter is not none %}
+                                    <input type="hidden" name="colour" value="{{ counter }}">
+                                    <input type="hidden" name="square_num" value="5">
+                                    <button class="counter" type="submit" style="background-color: {{ counter }}"></button>
+                                {% else %}
+                                    <button class="blank" disabled></button>
+                                {% endif %}
+                                </form>
+                        {% endfor %}
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="square">
+                        <label>IV</label>
+                        {% for counter in counters[4] %}
+                            <form method="post" action="/move_piece">
+                                {% if counter is not none %}
+                                    <input type="hidden" name="colour" value="{{ counter }}">
+                                    <input type="hidden" name="square_num" value="4">
+                                    <button class="counter" type="submit" style="background-color: {{ counter }}"></button>
+                                {% else %}
+                                    <button class="blank" disabled></button>
+                                {% endif %}
+                                </form>
+                        {% endfor %}
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="square">
+                        <label>III</label>
+                        {% for counter in counters[3] %}
+                            <form method="post" action="/move_piece">
+                                {% if counter is not none %}
+                                    <input type="hidden" name="colour" value="{{ counter }}">
+                                    <input type="hidden" name="square_num" value="3">
+                                    <button class="counter" type="submit" style="background-color: {{ counter }}"></button>
+                                {% else %}
+                                    <button class="blank" disabled></button>
+                                {% endif %}
+                                </form>
+                        {% endfor %}
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="square">
+                        <label>II</label>
+                        {% for counter in counters[2] %}
+                            <form method="post" action="/move_piece">
+                                {% if counter is not none %}
+                                    <input type="hidden" name="colour" value="{{ counter }}">
+                                    <input type="hidden" name="square_num" value="2">
+                                    <button class="counter" type="submit" style="background-color: {{ counter }}"></button>
+                                {% else %}
+                                    <button class="blank" disabled></button>
+                                {% endif %}
+                                </form>
+                        {% endfor %}
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="square">
+                        <label>I</label>
+                        {% for counter in counters[1] %}
+                            <form method="post" action="/move_piece">
+                                {% if counter is not none %}
+                                    <input type="hidden" name="colour" value="{{ counter }}">
+                                    <input type="hidden" name="square_num" value="1">
+                                    <button class="counter" type="submit" style="background-color: {{ counter }}"></button>
+                                {% else %}
+                                    <button class="blank" disabled></button>
+                                {% endif %}
+                                </form>
+                        {% endfor %}
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="bottom">
+        <table>
+            <tr>
+                <td>
+                    <div class="square">
+                        <label>S</label>
+                        {% for counter in counters[21] %}
+                            <form method="post" action="/move_piece">
+                                {% if counter is not none %}
+                                    <input type="hidden" name="colour" value="{{ counter }}">
+                                    <input type="hidden" name="square_num" value="21">
+                                    <button class="counter" type="submit" style="background-color: {{ counter }}"></button>
+                                {% else %}
+                                    <button class="blank" disabled></button>
+                                {% endif %}
+                                </form>
+                        {% endfor %}
+                    </div>
+                </td>
+                <td>
+                    <div class="square">
+                        <label>XIX</label>
+                        {% for counter in counters[22] %}
+                            <form method="post" action="/move_piece">
+                                {% if counter is not none %}
+                                    <input type="hidden" name="colour" value="{{ counter }}">
+                                    <input type="hidden" name="square_num" value="22">
+                                    <button class="counter" type="submit" style="background-color: {{ counter }}"></button>
+                                {% else %}
+                                    <button class="blank" disabled></button>
+                                {% endif %}
+                                </form>
+                        {% endfor %}
+                    </div>
+                </td>
+                <td>
+                    <div class="square">
+                        <label>XX</label>
+                        {% for counter in counters[23] %}
+                            <form method="post" action="/move_piece">
+                                {% if counter is not none %}
+                                    <input type="hidden" name="colour" value="{{ counter }}">
+                                    <input type="hidden" name="square_num" value="23">
+                                    <button class="counter" type="submit" style="background-color: {{ counter }}"></button>
+                                {% else %}
+                                    <button class="blank" disabled></button>
+                                {% endif %}
+                                </form>
+                        {% endfor %}
+                    </div>
+                </td>
+                <td>
+                    <div class="square">
+                        <label>XXI</label>
+                        {% for counter in counters[24] %}
+                            <form method="post" action="/move_piece">
+                                {% if counter is not none %}
+                                    <input type="hidden" name="colour" value="{{ counter }}">
+                                    <input type="hidden" name="square_num" value="24">
+                                    <button class="counter" type="submit" style="background-color: {{ counter }}"></button>
+                                {% else %}
+                                    <button class="blank" disabled></button>
+                                {% endif %}
+                                </form>
+                        {% endfor %}
+                    </div>
+                </td>
+                <td>
+                    <div class="square">
+                        <label>XXII</label>
+                        {% for counter in counters[25] %}
+                            <form method="post" action="/move_piece">
+                                {% if counter is not none %}
+                                    <input type="hidden" name="colour" value="{{ counter }}">
+                                    <input type="hidden" name="square_num" value="25">
+                                    <button class="counter" type="submit" style="background-color: {{ counter }}"></button>
+                                {% else %}
+                                    <button class="blank" disabled></button>
+                                {% endif %}
+                                </form>
+                        {% endfor %}
+                    </div>
+                </td>
+                <td>
+                    <div class="square">
+                        <label>XXIII</label>
+                        {% for counter in counters[26] %}
+                            <form method="post" action="/move_piece">
+                                {% if counter is not none %}
+                                    <input type="hidden" name="colour" value="{{ counter }}">
+                                    <input type="hidden" name="square_num" value="26">
+                                    <button class="counter" type="submit" style="background-color: {{ counter }}"></button>
+                                {% else %}
+                                    <button class="blank" disabled></button>
+                                {% endif %}
+                                </form>
+                        {% endfor %}
+                    </div>
+                </td>
+                <td>
+                    <div class="square">
+                        <label>XXIV</label>
+                        {% for counter in counters[27] %}
+                            <form method="post" action="/move_piece">
+                                {% if counter is not none %}
+                                    <input type="hidden" name="colour" value="{{ counter }}">
+                                    <input type="hidden" name="square_num" value="27">
+                                    <button class="counter" type="submit" style="background-color: {{ counter }}"></button>
+                                {% else %}
+                                    <button class="blank" disabled></button>
+                                {% endif %}
+                                </form>
+                        {% endfor %}
+                    </div>
+                </td>
+                <td>
+                    <div class="square">
+                        <label>S</label>
+                        {% for counter in counters[0] %}
+                            <form method="post" action="/move_piece">
+                                {% if counter is not none %}
+                                    <input type="hidden" name="colour" value="{{ counter }}">
+                                    <input type="hidden" name="square_num" value="0">
+                                    <button class="counter" type="submit" style="background-color: {{ counter }}"></button>
+                                {% endif %}
+                                </form>
+                        {% endfor %}
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    
+</div>

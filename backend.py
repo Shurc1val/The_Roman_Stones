@@ -4,9 +4,10 @@ from random import randint
 
 class Player():
     """Class for player instances."""
-    def __init__(self, colour: str) -> None:
+    def __init__(self, colour: str, user_id: str) -> None:
         self.colour = colour
         self.die_roll = 0
+        self.user_id = user_id
 
     def roll_die(self):
         """Function to randomly roll die if it is currently zero."""
@@ -20,23 +21,37 @@ class Player():
 class Game():
     """Class for game instance."""
 
-    def __init__(self, counters_per_player: int) -> None:
+    def __init__(self, number_of_players: int = 0, counters_per_player: int = 0) -> None:
         self.players = []
+        self.number_of_players = number_of_players
         self.counters_per_player = counters_per_player
-        self.board = [[] for i in range(28)]
+        self.board = [[None] * 9 for i in range(28)]
         self.finished_tokens = []
+
+
+    def _remove_piece(self, colour, index):
+        """Replaces counter at given index on board with None."""
+        position = self.board[index].index(colour)
+        self.board[index][position] = None
+
+    
+    def _add_piece(self, colour, index):
+        """Replaces first None at given index on board with colour."""
+        position = self.board[index].index(None)
+        self.board[index][position] = colour
+
 
     def add_player(self, player: Player):
         """Function to add player to the board."""
         self.players.append(player)
         for i in range(self.counters_per_player):
-            self.board[0].append(player.colour)
+            self._add_piece(player.colour, 0)
 
 
     @property
-    def number_of_players(self) -> int:
-        """Number of players on the board."""
-        return len(self.players)
+    def player_ids(self) -> list[int]:
+        """Returns list of user_id for all the players in the game."""
+        return [player.user_id for player in self.players]
 
 
     @property
@@ -44,6 +59,14 @@ class Game():
         """Total number of counters on the board."""
         return self.number_of_players * self.counters_per_player
     
+
+    def _validate_user(self, user_id: str) -> bool:
+        print(self.players[0].user_id, user_id)
+        if self.players[0].user_id != user_id:
+            return False
+        
+        return True
+
 
     def _validate_move(self, current_index: int, colour: str) -> bool:
         """Function to validate a move is valid."""
@@ -56,126 +79,58 @@ class Game():
             return False
 
         for place in self.board[current_index+1:current_index+die_roll]:
-            if place.count(colour) < len(place) - 1:
+            num_counters = len([counter for counter in place if counter])
+            if (num_counters >= 2) and (place.count(colour) < num_counters):
                 return False
             
         return True
 
+    
+    def check_if_moves_exist(self) -> bool:
+        """Function to check if any moves are available for the current player."""
+        colour = self.players[0].colour
 
-    def _next_player(self):
+        for i, place in enumerate(self.board):
+            if (colour in place) and self._validate_move(i, colour):
+                return True
+
+        return False
+
+
+    def next_player(self):
         player = self.players.pop(0)
         self.players.append(player)
 
 
-    def move_piece(self, current_index: int, colour: str) -> bool:
+    def check_win(self) -> bool:
+        """Function to check if the game has been won."""
+        if self.finished_tokens.count(self.players[0].colour) == self.counters_per_player:
+            return True
+        
+        return False
+
+
+    def move_piece(self, current_index: int, colour: str, user_id: str) -> bool:
         """Function to attempt to move a counter on the board."""
-        if not self._validate_move(current_index, colour):
+        if not (self._validate_user(user_id) and self._validate_move(current_index, colour)):
             return False
         
         die_roll = self.players[0].die_roll
 
-        self.board[current_index].remove(colour)
+        self._remove_piece(colour, current_index)
 
-        
-        for i in range(current_index+1, current_index+die_roll):
+        for i in range(current_index + 1, current_index + die_roll):
             for counter in self.board[i]:
                 if (counter != colour) and (i % 7 != 0):
-                    self.board[i].remove(counter)
-                    self.board[0].append(counter)
+                    self._remove_piece(counter, i)
+                    self._add_piece(counter, 0)
 
         if current_index + die_roll == 28:
             self.finished_tokens.append(colour)
         else:
-            self.board[current_index + die_roll].append(colour)
+            self._add_piece(colour, current_index + die_roll)
 
         self.players[0].reset_die()
-        self._next_player()
+        self.next_player()
 
         return True
-
-        
-
-
-def validate_user_input(msg, options):
-    while True:
-        user_input = input(msg)
-        if user_input in options:
-            return user_input
-        print("Not a valid entry!\n")
-
-
-def roll_die():
-    return randint(1,6)
-
-
-def validate_move(current_index, num, colour):
-    if board[current_index].count(colour) == 0:
-        return False
-    for place in board[current_index+1:current_index+num]:
-        if len(place) > 1 and place.count(colour) != len(place):
-            return False
-    if current_index + num > 28:
-        return False
-    return True
-
-
-def move_piece(current_index, num, colour):
-    board[current_index].remove(colour)
-    if current_index + num == 28:
-        finished_tokens.append(colour)
-    else:
-        board[current_index + num].append(colour)
-    for i in range(current_index+1,current_index+num):
-        if board[i] and i not in (7,14,21):
-            for piece in board[i]:
-                if piece != colour:
-                    board[i].remove(piece)
-                    board[0].append(piece)
-    #Might cause errors at end of board
-    return True
-
-
-def main():
-    board = [[] for i in range(28)]
-    finished_tokens = []
-    possible_colours = ["Blue","Green","Red","White"]
-    user_num_to_index = {"s1":0,"1":1,"2":2,"3":3,"4":4,"5":5,"6":6,"s2":7,"7":8,"8":9,"9":10,"10":11,"11":12,"12":13,"s3":14,"13":15,"14":16,"15":17,"16":18,"17":19,"18":20,"s4":21,"19":22,"20":23,"21":24,"22":25,"23":26,"24":27}
-    players = []
-    turn_counter = 1
-
-    num_players = int(validate_user_input("Please enter the number of players (2-4): ", "234"))
-    num_tokens = int(validate_user_input("How many tokens should each player have? (1-3) ", "123"))
-
-    for i in range(1,num_players + 1):
-        player_colour = validate_user_input(f"Player {i}, what colour do you want to be? ({', '.join(possible_colours)}) ", possible_colours)
-        players.append(player_colour)
-        possible_colours.remove(player_colour)
-        for i in range(num_tokens):
-            board[0].append(player_colour[0])
-
-    print_board(board)
-
-    while not max([finished_tokens.count(colour[0]) for colour in players]) == num_tokens:
-        print("\n{} player turn".format(players[turn_counter-1]))
-        input("Press any [enter] to roll the die: ")
-        die_roll = roll_die()
-        print(die_roll)
-        while True:
-            move_possible = False
-            for i in range(0,28):
-                if validate_move(i,die_roll,players[turn_counter-1][0]):
-                    move_possible = True
-            if move_possible:
-                current_index = user_num_to_index[validate_user_input("Which piece would you like to move? (enter place name) ", user_num_to_index.keys())]
-                if validate_move(current_index,die_roll,players[turn_counter-1][0]):
-                    move_piece(current_index,die_roll,players[turn_counter-1][0])
-                    break
-                print("Not a valid move")
-            else:
-                print("No moves possible!!")
-                input("(press [enter] to continue)")
-                break
-        print_board(board)
-        turn_counter = (turn_counter + 1) % num_players
-
-    print(f"Congratulations {players[turn_counter-1]} player, you win!!")
