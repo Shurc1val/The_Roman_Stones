@@ -1,7 +1,9 @@
 """Module to contain and run the endpoints for the Deloton staff API"""
 
 from random import randint
+from os import environ
 
+from dotenv import load_dotenv
 from flask import Flask, render_template, request, Response, redirect, url_for, make_response
 from flask_login import LoginManager, login_user, current_user, AnonymousUserMixin
 from turbo_flask import Turbo
@@ -45,10 +47,11 @@ class User():
         return str(user_id)
 
 
+load_dotenv()
 
 app = Flask(__name__, template_folder='templates')
 app.json.sort_keys = False
-app.secret_key = "Actually at Aikmains"
+app.secret_key = environ['SECRET_KEY']
 
 login_manager = LoginManager()
 login_manager.init_app(app)
