@@ -169,7 +169,7 @@ def move_piece():
         turbo.replace(render_template('off_board.html', finished_tokens=game.finished_tokens), 'off_board')        
         ])
     if game.check_win(colour):
-        turbo.push(turbo.replace(render_template('game.html', counters = game.board, counters_per_square = max(ceil(sqrt(game.total_number_of_counters)), 3), finished_tokens = game.finished_tokens, die_number = game.players[0].die_roll, player_turn = game.players[0].colour, message={'title': "Winner", 'text': f"Congratulations {colour} player, you have won!"}), 'game'))
+        turbo.push(turbo.replace(render_template('game.html', counters = game.board, finished_tokens = game.finished_tokens, die_number = game.players[0].die_roll, player_turn = game.players[0].colour, message={'title': "Winner", 'text': f"Congratulations {colour} player, you have won!"}), 'game'))
     return Response(status=200)
 
 
@@ -204,7 +204,7 @@ def roll_die():
         turbo.push(turbo.replace(render_template('board.html', counters=game.board, counters_per_square = max(ceil(sqrt(game.total_number_of_counters)), 3), message=message), "board"), to=current_user.get_id())
         game.next_player()
     
-    return Response(status=200)
+    return redirect(url_for('display_game'))
 
 
 @app.route("/close_popup", methods=["POST"])
@@ -227,7 +227,7 @@ def quit_game():
         user_id = current_user.get_id() 
         game.remove_player(user_id)
         if len(game.players) != 0:
-            turbo.push(turbo.replace(render_template('game.html', counters = game.board, counters_per_square = max(ceil(sqrt(game.total_number_of_counters)), 3), finished_tokens = game.finished_tokens, die_number = game.players[0].die_roll, player_turn = game.players[0].colour, message={}), "game"))
+            turbo.push(turbo.replace(render_template('game.html', counters = game.board, finished_tokens = game.finished_tokens, die_number = game.players[0].die_roll, player_turn = game.players[0].colour, message={}), "game"))
         return redirect(url_for('login'))
 
 
