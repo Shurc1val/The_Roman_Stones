@@ -145,8 +145,13 @@ def login():
 def display_game():
     """ Creates an index route with an index page for the API """
     message = {}
+    user_id = current_user.get_id()
     if len(game.players) < game.number_of_players:
-        message = {'title': "Please Wait", 'text': f"Please wait for the rest of the players to join ({len(game.players)}/{game.number_of_players})."}
+        if user_id not in game.player_ids:
+            return redirect(url_for('login'))
+        else:
+            message = {'title': "Please Wait", 'text': f"Please wait for the rest of the players to join ({len(game.players)}/{game.number_of_players})."}
+
     return render_template('TRS.html', counters = game.board, finished_tokens = game.finished_tokens, die_number = game.players[0].die_roll, player_turn = game.players[0].colour, message=message)
 
 
@@ -227,5 +232,3 @@ def quit_game():
 
 if __name__ == "app":
     game = backend.Game()
-
-    print(game.board)

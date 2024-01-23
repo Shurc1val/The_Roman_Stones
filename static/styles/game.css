@@ -5,7 +5,8 @@ body {
     padding: 0;
     align-items: center;
     justify-content: center;
-    min-height: 100vh;
+    height: 100vh;
+    width: 100wh;
 }
 
 h1, h2, p, ul, li {
@@ -20,8 +21,8 @@ h1 {
 
 .game {
     position: relative;
-    height: 864px;
-    width: 720px;
+    height: 90%;
+    aspect-ratio: 5 / 6;
     z-index: 0;
     background-color: black;
     display: flex;
@@ -36,6 +37,7 @@ h1 {
     position: relative;
     display: block;
     width: 90%;
+    z-index: inherit;
     aspect-ratio: 1 / 1;
     background-color: black;
     border: 5px solid white;
@@ -50,7 +52,7 @@ h1 {
         background: whitesmoke;
         display: flex;
         flex-flow: wrap;
-        gap: 0px;
+        z-index: inherit;
         justify-content: inherit;
         label {
             position: absolute;
