@@ -1,6 +1,5 @@
-{% if "colours_available" in message %}
-    {% if message.players|length == 0 %}
-        <div id="popup_box" class="popup_box">
+<div id="popup_box" class="popup_box">{% if "colours_available" in message %}
+        {% if message.players|length == 0 %}            
             <div class="top">
             Initial Player Login
             </div>
@@ -31,9 +30,7 @@
                 </div>
                 <button class="submit" type="submit">Submit</button>
             </form>
-        </div>
-    {% else %}
-        <div id="popup_box" class="popup_box">
+        {% else %}
             <div class="top">
             Player Login
             </div>
@@ -48,17 +45,26 @@
                 </div>
                 <button class="submit" type="submit">Submit</button>
             </form>
-        </div>
-    {% endif %}
-    
-{% elif "title" in message %}
-    <div id="popup_box" class="popup_box">
-        <div class="top">
-            {{ message.title }}
-        </div>
-        <p>{{ message.text }}</p>
-        <form method="post" action="/close_popup">
-            <button class="submit" type="submit">Okay</button>
-        </form>
-    </div>
-{% endif %}
+        {% endif %}
+    {% elif "title" in message %}
+        {% if message.title == "Quit Game" %}
+            <div class="top">
+                {{ message.title }}
+            </div>
+            <p>{{ message.text }}</p>
+            <form method="post" action="/close_popup">
+                <button class="submit" type="submit">Cancel</button>
+            </form>
+            <form method="post" action="/quit_game">
+                <button class="submit" type="submit">Confirm</button>
+            </form>
+        {% else %}
+            <div class="top">
+                {{ message.title }}
+            </div>
+            <p>{{ message.text }}</p>
+            <form method="post" action="/close_popup">
+                <button class="submit" type="submit">Okay</button>
+            </form>
+        {% endif %}
+    {% endif %}</div>

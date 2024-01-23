@@ -4,24 +4,6 @@
     
     {% include 'board.html' %}
 
-    <div id="controls" class="controls">
-        <div class="game_level">
-            {% include 'player_turn_label.html' %}
-            <form method="post" action="/roll_die">
-                <input type="hidden" name="colour" value="{{ player_turn }}">
-                {% if message|length == 0 %}
-                    <button class="roll_die">Roll Die</button>
-                {% else %}
-                    <button class="roll_die" disabled>Roll Die</button>
-                {% endif %}
-            </form>
-        </div>
-
-        {% include "die_image.html" %}
-        
-        {% include "off_board.html" %}
-        
-        {% include "high_level.html" %}
-    </div>
+    {% include 'controls.html' %}
     
 </div>

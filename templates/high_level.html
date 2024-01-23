@@ -1,9 +1,17 @@
 <div id="high_level" class="high_level">
     {% if message|length == 0 %}
-        <button class="function" style="color: blue;">New Game</button>
-        <button class="function" style="color: red;">Quit</button>
+        <form method="post" action="/new_game">
+            <button class="function" style="color: blue;">New Game</button>
+        </form>
+        <form method="get" action="/quit_game">
+            <button class="function" style="color: red;">Quit</button>
+        </form>
     {% else %}
-        <button class="function" style="color: blue;" disabled>New Game</button>
-        <button class="function" style="color: red;" disabled>Quit</button>
+        <form method="post" action="/new_game">
+            <button class="function" style="color: blue;" disabled>New Game</button>
+        </form>
+        <form method="get" action="/quit_game">
+            <button class="function" style="color: red;" disabled>Quit</button>
+        </form>
     {% endif %}
 </div>

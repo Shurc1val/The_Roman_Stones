@@ -21,7 +21,7 @@ class Player():
 class Game():
     """Class for game instance."""
 
-    def __init__(self, number_of_players: int = 0, counters_per_player: int = 0) -> None:
+    def __init__(self, number_of_players: int = 10, counters_per_player: int = 0) -> None:
         self.players = []
         self.number_of_players = number_of_players
         self.counters_per_player = counters_per_player
@@ -39,6 +39,25 @@ class Game():
         """Replaces first None at given index on board with colour."""
         position = self.board[index].index(None)
         self.board[index][position] = colour
+
+
+    def remove_player(self, user_id: str):
+        """Removes a player from the game"""
+        for player in self.players:
+            if player.user_id == user_id:
+                colour = player.colour
+                self.players.remove(player)
+
+        for square in self.board:
+            for i, counter in enumerate(square):
+                if counter == colour:
+                    square[i] = None
+
+        for counter in self.finished_tokens:
+            if counter == colour:
+                self.finished_tokens.remove(counter)
+        
+        self.number_of_players -= 1
 
 
     def add_player(self, player: Player):

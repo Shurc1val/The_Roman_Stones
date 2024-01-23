@@ -77,7 +77,7 @@ def login_redirect(func):
   """Decorator to make all game interactions first require a login."""
   def redirected_func(*args, **kwargs):
     user_id = current_user.get_id()
-    if user_id in game.player_ids:
+    if user_id in [user.get_id() for user in users]:
         return func(*args, **kwargs)
     else:
         return redirect(url_for('login'), code=302)
@@ -104,7 +104,13 @@ def login():
         elif user_id in game.player_ids:
             return redirect(url_for('display_game'))
 
-        return render_template('TRS.html', counters = game.board, finished_tokens = game.finished_tokens, die_number = None, player_turn = "", message={'players': player_colours, 'colours_available': available_colours_remaining})
+        if len(game.players) < game.number_of_players:
+            message = {'players': player_colours, 'colours_available': available_colours_remaining}
+        else:
+            message = {'title': "Game Full", 'text': "Sorry, there are no spots left in this game; feel free to watch."}
+            return render_template('TRS.html', counters = game.board, finished_tokens = game.finished_tokens, die_number = game.players[0].die_roll, player_turn = game.players[0].colour, message=message)
+
+        return render_template('TRS.html', counters = game.board, finished_tokens = game.finished_tokens, die_number = None, player_turn = "", message=message)
 
     elif request.method == "POST":
         user_id = current_user.get_id()
@@ -187,7 +193,7 @@ def roll_die():
             'text': f"Sorry {game.players[0].colour}, you have no moves available!"
         }
         game.next_player()
-        turbo.push(turbo.replace(render_template('game.html', counters = game.board, finished_tokens = game.finished_tokens, die_number = game.players[0].die_roll, player_turn = game.players[0].colour, message=message), "game"))
+        turbo.push(turbo.replace(render_template('game.html', counters = game.board, finished_tokens = game.finished_tokens, die_number = game.players[0].die_roll, player_turn = game.players[0].colour, message=message), "game"), to=current_user.get_id())
     
     return Response(status=200)
 
@@ -196,8 +202,27 @@ def roll_die():
 @login_redirect
 def close_popup():
     """Function to close popup when okay button pressed."""
-    turbo.push(turbo.replace(render_template('popup.html', message={}), 'popup_box'))
-    return Response(status=200)
+    turbo.push([
+        turbo.replace(render_template('popup.html', message={}), 'popup_box'),
+        turbo.replace(render_template('controls.html', finished_tokens = game.finished_tokens, die_number = game.players[0].die_roll, player_turn = game.players[0].colour, message={}), 'controls')
+        ], to=current_user.get_id())
+    print('ham')
+    return redirect(url_for('display_game'))
+
+
+@app.route("/quit_game", methods=["GET", "POST"])
+def quit_game():
+    """Allows a player to leave the game."""
+    if request.method == "GET":
+        user_id = current_user.get_id()
+        turbo.push(turbo.replace(render_template('popup.html', message={'title': "Quit Game", 'text': "This will remove you and all your counters from the board. Are you sure you want to leave?"}), "popup_box"), to=user_id)
+        return Response(status=200)
+    elif request.method == "POST":
+        user_id = current_user.get_id() 
+        game.remove_player(user_id)
+        turbo.push(turbo.replace(render_template('game.html', counters = game.board, finished_tokens = game.finished_tokens, die_number = game.players[0].die_roll, player_turn = game.players[0].colour, message={}), "game"))
+        return redirect(url_for('login'))
+
 
 
 if __name__ == "app":
