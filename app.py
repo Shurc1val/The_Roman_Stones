@@ -5,7 +5,7 @@ from os import environ
 
 from dotenv import load_dotenv
 from flask import Flask, render_template, request, Response, redirect, url_for, make_response
-from flask_login import LoginManager, login_user, current_user, AnonymousUserMixin
+from flask_login import LoginManager, login_user, logout_user, current_user, AnonymousUserMixin
 from turbo_flask import Turbo
 
 import backend
@@ -107,13 +107,13 @@ def login():
         elif user_id in game.player_ids:
             return redirect(url_for('display_game'))
 
-        if len(game.players) < game.number_of_players:
+        if (len(game.players) < game.number_of_players) or game.number_of_players == 0:
             message = {'players': player_colours, 'colours_available': available_colours_remaining}
         else:
             message = {'title': "Game Full", 'text': "Sorry, there are no spots left in this game; feel free to watch."}
             return render_template('TRS.html', counters = game.board, finished_tokens = game.finished_tokens, die_number = game.players[0].die_roll, player_turn = game.players[0].colour, message=message)
 
-        return render_template('TRS.html', counters = game.board, finished_tokens = game.finished_tokens, die_number = None, player_turn = "", message=message)
+        return render_template('TRS.html', counters = game.board, finished_tokens = game.finished_tokens, die_number = 0, player_turn = "", message=message)
 
     elif request.method == "POST":
         user_id = current_user.get_id()
@@ -132,10 +132,8 @@ def login():
             non_player_ids = list(set([user.get_id() for user in users]).difference(set(game.player_ids)))
             player_colours = [player.colour for player in game.players]
             available_colours_remaining = list(set(COLOURS_AVAILABLE).difference(set(player_colours)))
-            print(COLOURS_AVAILABLE, player_colours)
-            print([user.get_id() for user in users])
-            turbo.push(turbo.replace(render_template('game.html', counters = game.board, finished_tokens = game.finished_tokens, die_number = None, player_turn = "", message={'players': player_colours, 'colours_available': available_colours_remaining}), 'game'), to=non_player_ids)
-            turbo.push(turbo.replace(render_template('game.html', counters = game.board, finished_tokens = game.finished_tokens, die_number = None, player_turn = "", message={'title': "Please Wait", 'text': f"Please wait for the rest of the players to join ({len(game.players)}/{game.number_of_players})."}), 'game'), to=game.player_ids)
+            turbo.push(turbo.replace(render_template('game.html', counters = game.board, finished_tokens = game.finished_tokens, die_number = 0, player_turn = "", message={'players': player_colours, 'colours_available': available_colours_remaining}), 'game'), to=non_player_ids)
+            turbo.push(turbo.replace(render_template('game.html', counters = game.board, finished_tokens = game.finished_tokens, die_number = 0, player_turn = "", message={'title': "Please Wait", 'text': f"Please wait for the rest of the players to join ({len(game.players)}/{game.number_of_players})."}), 'game'), to=game.player_ids)
         else:
             turbo.push(turbo.replace(render_template('game.html', counters = game.board, finished_tokens = game.finished_tokens, die_number = game.players[0].die_roll, player_turn = game.players[0].colour, message={}), 'game'))
             return {}, 200
@@ -174,6 +172,7 @@ def move_piece():
 
 
 @app.route("/roll_die", methods=["POST"])
+
 @login_redirect
 def roll_die():
     """Function to roll a die, if it's not already been rolled."""
@@ -225,9 +224,19 @@ def quit_game():
     elif request.method == "POST":
         user_id = current_user.get_id() 
         game.remove_player(user_id)
-        turbo.push(turbo.replace(render_template('game.html', counters = game.board, finished_tokens = game.finished_tokens, die_number = game.players[0].die_roll, player_turn = game.players[0].colour, message={}), "game"))
+        if len(game.players) != 0:
+            turbo.push(turbo.replace(render_template('game.html', counters = game.board, finished_tokens = game.finished_tokens, die_number = game.players[0].die_roll, player_turn = game.players[0].colour, message={}), "game"))
         return redirect(url_for('login'))
 
+
+@app.route("/new_game", methods=["GET"])
+def new_game():
+    global game, users
+    print('zzz')
+    game = backend.Game()
+    print('aaaa')
+    print('bbbb')
+    return redirect(url_for('login'), code=302) 
 
 
 if __name__ == "app":

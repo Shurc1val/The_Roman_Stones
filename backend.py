@@ -21,10 +21,10 @@ class Player():
 class Game():
     """Class for game instance."""
 
-    def __init__(self, number_of_players: int = 10, counters_per_player: int = 0) -> None:
+    def __init__(self) -> None:
         self.players = []
-        self.number_of_players = number_of_players
-        self.counters_per_player = counters_per_player
+        self.number_of_players = 0
+        self.counters_per_player = 0
         self.board = [[None] * 9 for i in range(28)]
         self.finished_tokens = []
 
