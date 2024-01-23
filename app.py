@@ -1,5 +1,6 @@
 """Module to contain and run the endpoints for the Deloton staff API"""
 
+from math import ceil, sqrt
 from random import randint
 from os import environ
 
@@ -59,7 +60,7 @@ users = []
 
 turbo = Turbo(app)
 
-COLOURS_AVAILABLE = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet']
+COLOURS_AVAILABLE = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet', 'teal', 'maroon', 'black']
 
 
 @turbo.user_id
@@ -111,9 +112,9 @@ def login():
             message = {'players': player_colours, 'colours_available': available_colours_remaining}
         else:
             message = {'title': "Game Full", 'text': "Sorry, there are no spots left in this game; feel free to watch."}
-            return render_template('TRS.html', counters = game.board, finished_tokens = game.finished_tokens, die_number = game.players[0].die_roll, player_turn = game.players[0].colour, message=message)
+            return render_template('TRS.html', counters = game.board, counters_per_square = max(ceil(sqrt(game.total_number_of_counters)), 3), finished_tokens = game.finished_tokens, die_number = game.players[0].die_roll, player_turn = game.players[0].colour, message=message)
 
-        return render_template('TRS.html', counters = game.board, finished_tokens = game.finished_tokens, die_number = 0, player_turn = "", message=message)
+        return render_template('TRS.html', counters = game.board, counters_per_square = max(ceil(sqrt(game.total_number_of_counters)), 3), finished_tokens = game.finished_tokens, die_number = 0, player_turn = "", message=message)
 
     elif request.method == "POST":
         user_id = current_user.get_id()
@@ -123,10 +124,11 @@ def login():
         colour = request.form.get('colour').lower()
         
         if num_players and counters_per_player:
-            game.counters_per_player = int(counters_per_player)
-            game.number_of_players = int(num_players)
+            game.set_num_players_and_counters(int(num_players), int(counters_per_player))
         
         game.add_player(backend.Player(colour, user_id))
+
+        turbo.push(turbo.replace(render_template('head.html', counters_per_square = max(ceil(sqrt(game.total_number_of_counters)), 3)), target='head'))
 
         if len(game.players) < game.number_of_players:
             non_player_ids = list(set([user.get_id() for user in users]).difference(set(game.player_ids)))
@@ -136,7 +138,7 @@ def login():
             turbo.push(turbo.replace(render_template('game.html', counters = game.board, finished_tokens = game.finished_tokens, die_number = 0, player_turn = "", message={'title': "Please Wait", 'text': f"Please wait for the rest of the players to join ({len(game.players)}/{game.number_of_players})."}), 'game'), to=game.player_ids)
         else:
             turbo.push(turbo.replace(render_template('game.html', counters = game.board, finished_tokens = game.finished_tokens, die_number = game.players[0].die_roll, player_turn = game.players[0].colour, message={}), 'game'))
-            return {}, 200
+            return Response(status=200)
         
         return redirect(url_for('display_game'))
 
@@ -153,7 +155,7 @@ def display_game():
         else:
             message = {'title': "Please Wait", 'text': f"Please wait for the rest of the players to join ({len(game.players)}/{game.number_of_players})."}
 
-    return render_template('TRS.html', counters = game.board, finished_tokens = game.finished_tokens, die_number = game.players[0].die_roll, player_turn = game.players[0].colour, message=message)
+    return render_template('TRS.html', counters = game.board, counters_per_square = max(ceil(sqrt(game.total_number_of_counters)), 3), finished_tokens = game.finished_tokens, die_number = game.players[0].die_roll, player_turn = game.players[0].colour, message=message)
 
 
 @app.route("/move_piece", methods = ["POST"])
@@ -162,12 +164,12 @@ def move_piece():
     colour = game.players[0].colour
     game.move_piece(int(request.form['square_num']), request.form['colour'], current_user.get_id())
     turbo.push([
-        turbo.replace(render_template('board.html', counters=game.board), 'board'),
+        turbo.replace(render_template('board.html', counters=game.board, counters_per_square = ceil(sqrt(game.total_number_of_counters))), 'board'),
         turbo.replace(render_template('player_turn_label.html', player_turn = game.players[0].colour), 'player_turn_label'),
         turbo.replace(render_template('off_board.html', finished_tokens=game.finished_tokens), 'off_board')        
         ])
     if game.check_win(colour):
-        turbo.push(turbo.replace(render_template('game.html', counters = game.board, finished_tokens = game.finished_tokens, die_number = game.players[0].die_roll, player_turn = game.players[0].colour, message={'title': "Winner", 'text': f"Congratulations {colour} player, you have won!"}), 'game'))
+        turbo.push(turbo.replace(render_template('game.html', counters = game.board, counters_per_square = max(ceil(sqrt(game.total_number_of_counters)), 3), finished_tokens = game.finished_tokens, die_number = game.players[0].die_roll, player_turn = game.players[0].colour, message={'title': "Winner", 'text': f"Congratulations {colour} player, you have won!"}), 'game'))
     return Response(status=200)
 
 
@@ -199,7 +201,7 @@ def roll_die():
             'title': "No Moves Available",
             'text': f"Sorry {game.players[0].colour}, you have no moves available!"
         }
-        turbo.push(turbo.replace(render_template('board.html', counters=game.board, message=message), "board"), to=current_user.get_id())
+        turbo.push(turbo.replace(render_template('board.html', counters=game.board, counters_per_square = max(ceil(sqrt(game.total_number_of_counters)), 3), message=message), "board"), to=current_user.get_id())
         game.next_player()
     
     return Response(status=200)
@@ -225,17 +227,14 @@ def quit_game():
         user_id = current_user.get_id() 
         game.remove_player(user_id)
         if len(game.players) != 0:
-            turbo.push(turbo.replace(render_template('game.html', counters = game.board, finished_tokens = game.finished_tokens, die_number = game.players[0].die_roll, player_turn = game.players[0].colour, message={}), "game"))
+            turbo.push(turbo.replace(render_template('game.html', counters = game.board, counters_per_square = max(ceil(sqrt(game.total_number_of_counters)), 3), finished_tokens = game.finished_tokens, die_number = game.players[0].die_roll, player_turn = game.players[0].colour, message={}), "game"))
         return redirect(url_for('login'))
 
 
 @app.route("/new_game", methods=["GET"])
 def new_game():
     global game, users
-    print('zzz')
     game = backend.Game()
-    print('aaaa')
-    print('bbbb')
     return redirect(url_for('login'), code=302) 
 
 

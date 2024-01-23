@@ -1,5 +1,6 @@
 """Module containing backend workings of the game."""
 
+from math import ceil, sqrt
 from random import randint
 
 class Player():
@@ -39,6 +40,12 @@ class Game():
         """Replaces first None at given index on board with colour."""
         position = self.board[index].index(None)
         self.board[index][position] = colour
+
+    
+    def set_num_players_and_counters(self, number_of_players: int, counters_per_player: int):
+        self.number_of_players = number_of_players
+        self.counters_per_player = counters_per_player
+        self.board = [[None] * (ceil(sqrt(self.total_number_of_counters))**2) for i in range(28)]
 
 
     def remove_player(self, user_id: str):

@@ -1,12 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/game.css') }}">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
-    <title>The Roman Stones</title>
-    {{ turbo() }}
-</head>
+{% include 'head.html' %}
 
 <body id="body">
 
