@@ -119,6 +119,9 @@ def login():
     elif request.method == "POST":
         user_id = current_user.get_id()
 
+        if user_id in game.player_ids:
+            redirect(url_for('display_game'), code=302)
+
         num_players = request.form.get('num_players')
         counters_per_player = request.form.get('counters_per_player')
         colour = request.form.get('colour').lower()
@@ -232,7 +235,7 @@ def quit_game():
 
 @app.route("/new_game", methods=["GET"])
 def new_game():
-    global game, users
+    global game
     game = backend.Game()
     return redirect(url_for('login'), code=302) 
 
