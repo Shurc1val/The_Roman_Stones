@@ -5,8 +5,8 @@ from random import randint
 from os import environ
 
 from dotenv import load_dotenv
-from flask import Flask, render_template, request, Response, redirect, url_for, make_response
-from flask_login import LoginManager, login_user, logout_user, current_user, AnonymousUserMixin
+from flask import Flask, render_template, request, Response, redirect, url_for, make_response, session
+from flask_login import LoginManager, login_user, logout_user, current_user, AnonymousUserMixin, login_required
 from turbo_flask import Turbo
 
 import backend
@@ -18,6 +18,7 @@ class User():
     def __init__(self, users: list) -> None:
         user_ids = [int(user.get_id()) for user in users]
         self._user_id = self.get_new_user_id(user_ids)
+        self._authenticated = True
 
     def get_id(self):
         return self._user_id
@@ -28,7 +29,7 @@ class User():
 
     @property
     def is_authenticated(self):
-        return True
+        return self._authenticated
 
     @property
     def is_anonymous(self):
@@ -77,20 +78,6 @@ def load_user(user_id: str) -> User:
     return matches[0]
 
 
-def login_redirect(func):
-  """Decorator to make all game interactions first require a login."""
-  def redirected_func(*args, **kwargs):
-    user_id = current_user.get_id()
-    if user_id in [user.get_id() for user in users]:
-        return func(*args, **kwargs)
-    else:
-        return redirect(url_for('login'), code=302)
-
-  redirected_func.__name__ = func.__name__
-
-  return redirected_func
-
-
 @app.route("/login", methods=["GET", "POST"])
 def login():
     """Function to make new players login."""
@@ -105,8 +92,11 @@ def login():
             user = User(users)
             if login_user(user):
                 users.append(user)
-        elif user_id in game.player_ids:
-            return redirect(url_for('display_game'))
+        else:
+            user = load_user(user_id)
+            user._authenticated = True
+            if user_id in game.player_ids:
+                return redirect(url_for('display_game'))
 
         if (len(game.players) < game.number_of_players) or game.number_of_players == 0:
             message = {'players': player_colours, 'colours_available': available_colours_remaining}
@@ -131,8 +121,8 @@ def login():
         
         game.add_player(backend.Player(colour, user_id))
 
-        turbo.push(turbo.replace(render_template('head.html', counters_per_square = max(ceil(sqrt(game.total_number_of_counters)), 3)), target='head'))
-        print(game.players, game.number_of_players)
+        turbo.push(turbo.update(render_template('head.html', counters_per_square = max(ceil(sqrt(game.total_number_of_counters)), 3)), 'head'))
+
         if len(game.players) < game.number_of_players:
             non_player_ids = list(set([user.get_id() for user in users]).difference(set(game.player_ids)))
             player_colours = [player.colour for player in game.players]
@@ -145,8 +135,13 @@ def login():
         return redirect(url_for('display_game'))
 
 
+@login_manager.unauthorized_handler
+def unauthorised():
+    return redirect(url_for('login'))
+
+
 @app.route("/", methods=["GET"])
-@login_redirect
+@login_required
 def display_game():
     """ Creates an index route with an index page for the API """
     message = {}
@@ -161,7 +156,7 @@ def display_game():
 
 
 @app.route("/move_piece", methods = ["POST"])
-@login_redirect
+@login_required
 def move_piece():
     colour = game.players[0].colour
     game.move_piece(int(request.form['square_num']), request.form['colour'], current_user.get_id())
@@ -177,7 +172,7 @@ def move_piece():
 
 @app.route("/roll_die", methods=["POST"])
 
-@login_redirect
+@login_required
 def roll_die():
     """Function to roll a die, if it's not already been rolled."""
     if not game._validate_user(current_user.get_id()):
@@ -210,7 +205,7 @@ def roll_die():
 
 
 @app.route("/close_popup", methods=["POST"])
-@login_redirect
+@login_required
 def close_popup():
     """Function to close popup when okay button pressed."""
     turbo.push(turbo.replace(render_template('popup.html', message={}), 'popup_box'), to=current_user.get_id())
@@ -237,6 +232,9 @@ def quit_game():
 def new_game():
     global game
     game = backend.Game()
+    turbo.push(turbo.replace(render_template('game.html', counters = game.board, finished_tokens = game.finished_tokens, die_number = 0, player_turn = "", message={'title': 'New Game', 'text': 'A new game is starting.'}), 'game'))
+    for user in users:
+        user._authenticated = False
     return redirect(url_for('login'), code=302) 
 
 
