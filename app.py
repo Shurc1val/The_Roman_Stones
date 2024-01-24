@@ -129,7 +129,7 @@ def login():
         game.add_player(backend.Player(colour, user_id))
 
         turbo.push(turbo.replace(render_template('head.html', counters_per_square = max(ceil(sqrt(game.total_number_of_counters)), 3)), target='head'))
-
+        print(game.players, game.number_of_players)
         if len(game.players) < game.number_of_players:
             non_player_ids = list(set([user.get_id() for user in users]).difference(set(game.player_ids)))
             player_colours = [player.colour for player in game.players]
@@ -138,7 +138,6 @@ def login():
             turbo.push(turbo.replace(render_template('game.html', counters = game.board, finished_tokens = game.finished_tokens, die_number = 0, player_turn = "", message={'title': "Please Wait", 'text': f"Please wait for the rest of the players to join ({len(game.players)}/{game.number_of_players})."}), 'game'), to=game.player_ids)
         else:
             turbo.push(turbo.replace(render_template('game.html', counters = game.board, finished_tokens = game.finished_tokens, die_number = game.players[0].die_roll, player_turn = game.players[0].colour, message={}), 'game'))
-            return Response(status=200)
         
         return redirect(url_for('display_game'))
 
