@@ -124,10 +124,14 @@ def login():
         turbo.push(turbo.update(render_template('head.html', counters_per_square = max(ceil(sqrt(game.total_number_of_counters)), 3)), 'head'))
 
         if len(game.players) < game.number_of_players:
-            non_player_ids = list(set([user.get_id() for user in users]).difference(set(game.player_ids)))
+            non_player_ids = list(set([user.get_id() for user in users if user.is_authenticated]).difference(set(game.player_ids)))
             player_colours = [player.colour for player in game.players]
             available_colours_remaining = list(set(COLOURS_AVAILABLE).difference(set(player_colours)))
-            turbo.push(turbo.replace(render_template('game.html', counters = game.board, finished_tokens = game.finished_tokens, die_number = 0, player_turn = "", message={'players': player_colours, 'colours_available': available_colours_remaining}), 'game'), to=non_player_ids)
+            print('np ids: ', non_player_ids)
+            if non_player_ids:
+                turbo.push(turbo.replace(render_template('game.html', counters = game.board, finished_tokens = game.finished_tokens, die_number = 0, player_turn = "", message={'players': player_colours, 'colours_available': available_colours_remaining}), 'game'), to=non_player_ids)
+
+            print(game.player_ids)
             turbo.push(turbo.replace(render_template('game.html', counters = game.board, finished_tokens = game.finished_tokens, die_number = 0, player_turn = "", message={'title': "Please Wait", 'text': f"Please wait for the rest of the players to join ({len(game.players)}/{game.number_of_players})."}), 'game'), to=game.player_ids)
         else:
             turbo.push(turbo.replace(render_template('game.html', counters = game.board, finished_tokens = game.finished_tokens, die_number = game.players[0].die_roll, player_turn = game.players[0].colour, message={}), 'game'))
@@ -146,7 +150,7 @@ def display_game():
     """ Creates an index route with an index page for the API """
     message = {}
     user_id = current_user.get_id()
-    if len(game.players) < game.number_of_players:
+    if (len(game.players) < game.number_of_players) or len(game.players) == 0:
         if user_id not in game.player_ids:
             return redirect(url_for('login'))
         else:
@@ -171,7 +175,6 @@ def move_piece():
 
 
 @app.route("/roll_die", methods=["POST"])
-
 @login_required
 def roll_die():
     """Function to roll a die, if it's not already been rolled."""
@@ -193,13 +196,14 @@ def roll_die():
             turbo.push(turbo.replace(render_template('die_image.html', die_number=game.players[0].die_roll), 'die_image'))
 
     if not game.check_if_moves_exist():
-        game.players[0].reset_die()
         message = {
             'title': "No Moves Available",
             'text': f"Sorry {game.players[0].colour}, you have no moves available!"
         }
-        turbo.push(turbo.replace(render_template('board.html', counters=game.board, counters_per_square = max(ceil(sqrt(game.total_number_of_counters)), 3), message=message), "board"), to=current_user.get_id())
+        turbo.push(turbo.replace(render_template('popup.html', message=message), "popup_box"), to=current_user.get_id())
+        game.players[0].reset_die()
         game.next_player()
+        return Response(status=200)
     
     return redirect(url_for('display_game'))
 
