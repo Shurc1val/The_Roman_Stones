@@ -124,8 +124,12 @@ class Game():
 
 
     def next_player(self):
-        player = self.players.pop(0)
-        self.players.append(player)
+        """Cycles through the list to the next (not finished) player."""
+        while True:
+            player = self.players.pop(0)
+            self.players.append(player)
+            if self.finished_tokens.count(self.players[0].colour) < self.counters_per_player:
+                break
 
 
     def check_win(self, colour: str) -> bool:
