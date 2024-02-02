@@ -18,7 +18,7 @@ class User():
     def __init__(self, users: list) -> None:
         user_ids = [int(user.get_id()) for user in users]
         self._user_id = self.get_new_user_id(user_ids)
-        self._authenticated = True
+        self._authenticated = False
 
     def get_id(self):
         return self._user_id
@@ -94,7 +94,6 @@ def login():
                 users.append(user)
         else:
             user = load_user(user_id)
-            user._authenticated = True
             if user_id in game.player_ids:
                 return redirect(url_for('display_game'))
 
@@ -120,11 +119,12 @@ def login():
             game.set_num_players_and_counters(int(num_players), int(counters_per_player))
         
         game.add_player(backend.Player(colour, user_id))
+        load_user(user_id)._authenticated = True
 
         turbo.push(turbo.update(render_template('head.html', counters_per_square = max(ceil(sqrt(game.total_number_of_counters)), 3)), 'head'))
 
         if len(game.players) < game.number_of_players:
-            non_player_ids = list(set([user.get_id() for user in users if user.is_authenticated]).difference(set(game.player_ids)))
+            non_player_ids = list(set([user.get_id() for user in users]).difference(set(game.player_ids)))
             player_colours = [player.colour for player in game.players]
             available_colours_remaining = list(set(COLOURS_AVAILABLE).difference(set(player_colours)))
             print('np ids: ', non_player_ids)
@@ -209,15 +209,25 @@ def roll_die():
 
 
 @app.route("/close_popup", methods=["POST"])
-@login_required
 def close_popup():
     """Function to close popup when okay button pressed."""
     turbo.push(turbo.replace(render_template('popup.html', message={}), 'popup_box'), to=current_user.get_id())
-    turbo.push(turbo.replace(render_template('controls.html', finished_tokens = game.finished_tokens, die_number = game.players[0].die_roll, player_turn = game.players[0].colour, message={}), 'controls'))
-    return redirect(url_for('display_game'))
+    if game.players:
+        die_number = game.players[0].die_roll
+        player_colour = game.players[0].colour
+    else:
+        die_number = None
+        player_colour = None
+
+    turbo.push(turbo.replace(render_template('controls.html', finished_tokens = game.finished_tokens, die_number = die_number, player_turn = player_colour, message={}), 'controls'))
+    if current_user.is_authenticated or request.form.get('type') == "new game":
+        return redirect(url_for('display_game'))
+    else:
+        return Response(status=200)
 
 
 @app.route("/quit_game", methods=["GET", "POST"])
+@login_required
 def quit_game():
     """Allows a player to leave the game."""
     if request.method == "GET":
@@ -227,18 +237,23 @@ def quit_game():
     elif request.method == "POST":
         user_id = current_user.get_id() 
         game.remove_player(user_id)
+        load_user(user_id)._authenticated = False
         if len(game.players) != 0:
             turbo.push(turbo.replace(render_template('game.html', counters = game.board, finished_tokens = game.finished_tokens, die_number = game.players[0].die_roll, player_turn = game.players[0].colour, message={}), "game"))
         return redirect(url_for('login'))
 
 
 @app.route("/new_game", methods=["GET"])
+@login_required
 def new_game():
     global game
     game = backend.Game()
-    turbo.push(turbo.replace(render_template('game.html', counters = game.board, finished_tokens = game.finished_tokens, die_number = 0, player_turn = "", message={'title': 'New Game', 'text': 'A new game is starting.'}), 'game'))
+    turbo.push(turbo.replace(render_template('game.html', counters = game.board, finished_tokens = game.finished_tokens, die_number = 0, player_turn = "", message={'title': 'New Game', 'text': 'A new game is starting.', 'type': 'new game'}), 'game'))
+    print('a')
+    print([user._authenticated for user in users])
     for user in users:
         user._authenticated = False
+    print([user._authenticated for user in users])
     return redirect(url_for('login'), code=302) 
 
 

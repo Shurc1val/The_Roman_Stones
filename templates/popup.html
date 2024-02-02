@@ -64,6 +64,9 @@
             </div>
             <p>{{ message.text }}</p>
             <form method="post" action="/close_popup">
+                {% if "type" in message %}
+                    <input type="hidden" name="type" value="{{ message.type }}">
+                {% endif %}
                 <button class="submit" type="submit">Okay</button>
             </form>
         {% endif %}
