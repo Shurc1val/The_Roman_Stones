@@ -87,7 +87,6 @@ class Game():
     
 
     def _validate_user(self, user_id: str) -> bool:
-        print(self.players[0].user_id, user_id)
         if self.players[0].user_id != user_id:
             return False
         
@@ -125,11 +124,14 @@ class Game():
 
     def next_player(self):
         """Cycles through the list to the next (not finished) player."""
-        while True:
-            player = self.players.pop(0)
-            self.players.append(player)
-            if self.finished_tokens.count(self.players[0].colour) < self.counters_per_player:
-                break
+        player = self.players.pop(0)
+        self.players.append(player)
+        for i, player in enumerate(self.players):
+            if self.finished_tokens.count(player.colour) < self.counters_per_player:
+                self.players = self.players[i:] + self.players[:i]
+                return True
+            
+        return False
 
 
     def check_win(self, colour: str) -> bool:
