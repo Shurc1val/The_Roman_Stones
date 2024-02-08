@@ -182,14 +182,17 @@ def roll_die():
         redirect(url_for('display_game'))
         return Response(status=400)
 
-    time_s = randint(1,3) / 100
-    time_threshold = randint(3, 5) / 10
+    power = int(request.form['power'])
+    print(power)
+    time_threshold = 0.5
+    time_s = time_threshold/(1.2**power)
+    time_factor = 1.3 - 0.002*power
     if game.players[0].die_roll == 0:
         with app.app_context():
             while time_s < time_threshold:
                 sleep(time_s)
                 turbo.push(turbo.replace(render_template('die_image.html', die_number=randint(1,6)), 'die_image'))
-                time_s *= 1.2
+                time_s *= time_factor
             
             game.players[0].reset_die()
             game.players[0].roll_die()

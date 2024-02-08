@@ -2,6 +2,7 @@
     {% include 'player_turn_label.html' %}
     <form method="post" action="/roll_die">
         <input type="hidden" name="colour" value="{{ player_turn }}">
+        <input title="Die roll power" type="range" id="power" name="power" min="1" max="99">
         {% if message|length == 0 %}
             <button class="roll_die">Roll Die</button>
         {% else %}
