@@ -86,7 +86,7 @@ class Game():
         return self.number_of_players * self.counters_per_player
     
 
-    def _validate_user(self, user_id: str) -> bool:
+    def validate_user(self, user_id: str) -> bool:
         if self.players[0].user_id != user_id:
             return False
         
@@ -144,7 +144,7 @@ class Game():
 
     def move_piece(self, current_index: int, colour: str, user_id: str) -> bool:
         """Function to attempt to move a counter on the board."""
-        if not (self._validate_user(user_id) and self._validate_move(current_index, colour)):
+        if not (self.validate_user(user_id) and self._validate_move(current_index, colour)):
             return False
         
         die_roll = self.players[0].die_roll
